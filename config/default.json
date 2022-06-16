@@ -1,0 +1,9 @@
+{
+  "port": 5000,
+  "mongoURI": "mongodb+srv://vlad:123@cluster0.vzq8z.mongodb.net/VKR2?retryWrites=true&w=majority",
+  "secretKey": "vladislavorehov",
+  "apiKey": "b96e100d-54b1-41f9-bf07-ad08cdd7273c",
+  "geocoderProvider": "yandex",
+  "mapBoxAPIKey": "pk.eyJ1IjoidmxhZGlzbGF2b3JlaG92NTUiLCJhIjoiY2wwcHU1OXZmMjIwMTNkbnM5am5qNnZ3NiJ9.F4jb_5KYsBu3MIy2-vOY8g",
+  "warehouseAddress": "склад"
+}
