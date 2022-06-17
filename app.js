@@ -1,12 +1,14 @@
 const express = require('express');
 const config = require('config');
 const mongoose = require('mongoose');
+const cors = require('cors');
 require('dotenv').config();
 
 const app = express();
 const PORT = config.get("port");
 
 app.use(express.json({extended: true}));
+app.use(cors());
 app.use('/api/auth', require('./routes/auth-rotes'));
 app.use('/api/client', require('./routes/client-route'));
 app.use('/api/logist', require('./routes/logist-route'));
