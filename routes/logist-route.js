@@ -1,6 +1,6 @@
 const {Router} = require('express');
 const Address = require('../models/Address');
-const User = require('../models/User');
+const Bid = require('../models/Bid');
 const Car = require('../models/Car');
 const Route = require('../models/Route');
 const CreateGroupsPointsGA = require('../GA/CreateGroupsPointsGA');
@@ -27,10 +27,12 @@ logistRouter.get('/', auth, async (req, res) => {
 
     /// Если кол-во точек, которое надо посетить, равно 1 и кол-во водителей равно или больше 1, то рандомно выбираем водителя
     if (countAddresses - 1 === 1 && Number(countCars) >= 1) {
+      console.log(1)
       let indArray = [];
       for (let i = 0; i < countCars; i++) {
         indArray.push(i);
       }
+      await Bid.deleteMany({_id: addresses[1].bidID});
       await Address.updateMany({}, {status: 'обработан'});
       const cars = await Car.find({driverID: {$ne: '-'}});
       const ind = Math.floor(Math.random() * countCars);
@@ -39,6 +41,7 @@ logistRouter.get('/', auth, async (req, res) => {
     }
     /// Если количество точек меньше, чем водителей, то распределяем их рандомно между водителями
     if (countAddresses - 1 < countCars) {
+      console.log('2')
       const cars = await Car.find({driverID: {$ne: '-'}});
       let indArray = [];
       const routes = [];
@@ -50,6 +53,7 @@ logistRouter.get('/', auth, async (req, res) => {
         routes.push({driverID: cars[indArray[ind]].driverID, addresses: addresses[i].address});
         indArray = [...indArray.slice(0, ind), ...indArray.slice(ind + 1)];
       }
+      await Bid.deleteMany({_id: addresses[1].bidID});
       await Route.insertMany(routes);
       await Address.updateMany({}, {status: 'обработан'});
       return res.json({data: [], error: false});
@@ -57,6 +61,7 @@ logistRouter.get('/', auth, async (req, res) => {
     /// Если количество точек, которые надо посетить равно кол-ву водителей и не равно 1,
     /// то рандомно распределяем их между водителями
     if (countAddresses - 1 === countCars) {
+      console.log(3)
       const cars = await Car.find({driverID: {$ne: '-'}});
       let indArray = [];
       for (let i = 1; i <= countCars; i++) { // с 1 так как 0 элемент - склад
@@ -68,6 +73,7 @@ logistRouter.get('/', auth, async (req, res) => {
         routes.push({driverID: car.driverID, addresses: addresses[indArray[ind]].address});
         indArray = [...indArray.slice(0, ind), ...indArray.slice(ind + 1)];
       }
+      await Bid.deleteMany({_id: addresses[1].bidID});
       await Address.updateMany({}, {status: 'обработан'});
       await Route.insertMany(routes);
       return res.json({data: [], error: false});
@@ -112,6 +118,7 @@ logistRouter.post('/address-save/:id', auth, async (req, res) => {
   await Address.updateOne({_id: req.params.id}, {status: 'обработан', distances});
   let addresses = await Address.find({status: {$in: ['в обработке', 'новый']}});
   if (addresses[0]) {
+    await Bid.deleteMany({_id: addresses[0].bidID});
     return res.json({message: 'Матрица расстояний сохранена, но есть необработанные маршруты'});
   }
   /// Выполняем эту часть только если все заявки обработаны
@@ -139,8 +146,10 @@ logistRouter.post('/address-save/:id', auth, async (req, res) => {
     for (let item of createdRoute) {
       routeAddresses.push(addresses[item].address);
     }
+    console.log('Ma')
     await Route.insertMany({driverID: cars[0].driverID, addresses: routeAddresses.slice(1, routeAddresses.length - 1)});
-    return res.json({message: 'Маршрут построен'});
+    // await Bid.deleteMany({_id: addresses[1].bidID});
+    return res.json({message: 'Маршруты построены'});
   }
   if (routesDistanceMatrixFirst.length > Number(countCars)) {
     let indArray = [];
@@ -174,8 +183,9 @@ logistRouter.post('/address-save/:id', auth, async (req, res) => {
       }
     }
     await Route.insertMany(routes);
+    // await Bid.deleteMany({_id: addresses[1].bidID});
   }
-  return res.json({message: 'Матрциа расстояний сохранена'})
+  return res.json({message: 'Маршруты построены'})
 
 })
 
