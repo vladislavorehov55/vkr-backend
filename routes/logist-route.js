@@ -27,7 +27,6 @@ logistRouter.get('/', auth, async (req, res) => {
 
     /// Если кол-во точек, которое надо посетить, равно 1 и кол-во водителей равно или больше 1, то рандомно выбираем водителя
     if (countAddresses - 1 === 1 && Number(countCars) >= 1) {
-      console.log(1)
       let indArray = [];
       for (let i = 0; i < countCars; i++) {
         indArray.push(i);
@@ -41,7 +40,6 @@ logistRouter.get('/', auth, async (req, res) => {
     }
     /// Если количество точек меньше, чем водителей, то распределяем их рандомно между водителями
     if (countAddresses - 1 < countCars) {
-      console.log('2')
       const cars = await Car.find({driverID: {$ne: '-'}});
       let indArray = [];
       const routes = [];
@@ -61,7 +59,6 @@ logistRouter.get('/', auth, async (req, res) => {
     /// Если количество точек, которые надо посетить равно кол-ву водителей и не равно 1,
     /// то рандомно распределяем их между водителями
     if (countAddresses - 1 === countCars) {
-      console.log(3)
       const cars = await Car.find({driverID: {$ne: '-'}});
       let indArray = [];
       for (let i = 1; i <= countCars; i++) { // с 1 так как 0 элемент - склад
@@ -146,18 +143,19 @@ logistRouter.post('/address-save/:id', auth, async (req, res) => {
     for (let item of createdRoute) {
       routeAddresses.push(addresses[item].address);
     }
-    console.log('Ma')
     await Route.insertMany({driverID: cars[0].driverID, addresses: routeAddresses.slice(1, routeAddresses.length - 1)});
     // await Bid.deleteMany({_id: addresses[1].bidID});
     return res.json({message: 'Маршруты построены'});
   }
   if (routesDistanceMatrixFirst.length > Number(countCars)) {
+
     let indArray = [];
     for (let i = 0; i < countCars; i++) {
       indArray.push(i);
     }
     const groupsPoints = new CreateGroupsPointsGA(routesDistanceMatrixFirst, countCars).execute();
     const routes = [];
+
     for (let groupPoints of groupsPoints) {
       const ind = Math.floor(Math.random() * indArray.length);
       if (groupPoints.length === 1) {
@@ -178,7 +176,7 @@ logistRouter.post('/address-save/:id', auth, async (req, res) => {
         for (let item of createdRoute) {
           routeAddresses.push(addresses[Object.keys(distanceMatrix)[item]].address);
         }
-        routes.push({diverID: cars[indArray[ind]].driverID, addresses: routeAddresses})
+        routes.push({driverID: cars[indArray[ind]].driverID, addresses: routeAddresses})
         indArray = [...indArray.slice(0, ind), ...indArray.slice(ind + 1)]
       }
     }

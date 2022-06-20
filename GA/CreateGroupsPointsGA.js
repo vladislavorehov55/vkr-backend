@@ -118,7 +118,7 @@ class CreateGroupsPointsGA extends GA{
     }
 
     execute() {
-        const generationCount = 200;
+        const generationCount = 100;
         let newPopulation = this.generatePopulation(60, this.distanceMatrix);
         for (let i = 0; i < generationCount; i++) {
             const fitnessValues = this.callFitness(newPopulation, this.countDrivers, this.distanceMatrix);
@@ -128,7 +128,7 @@ class CreateGroupsPointsGA extends GA{
         }
         const fitnessValues = this.callFitness(newPopulation, this.countDrivers, this.distanceMatrix);
         const [bestSolution] = this.selectParents(newPopulation, fitnessValues, 1);
-        const arr = this.getRoutesByDrivers(bestSolution, this.countDrivers);
+        const arr = this.getRoutesByDrivers(this.bestRes[1], this.countDrivers);
         return arr
     }
 }

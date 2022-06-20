@@ -1,4 +1,5 @@
 const GA = require('./GA');
+const {json} = require("express");
 
 class CreateRouteGA extends GA {
     constructor(distanceMatrix, shippingWeight, maxWeightInCar, Hsan, fuelType, age, mileage) {
@@ -154,7 +155,7 @@ class CreateRouteGA extends GA {
     }
 
     execute() {
-        const generationCount = 200;
+        const generationCount = 100;
         let newPopulation = this.generatePopulation(60);
         for (let i = 0; i < generationCount; i++) {
             const fitnessValues = this.callFitness(this.distanceMatrix,newPopulation, this.maxWeightInCar, this.shippingWeight, this.Hsan, this.Hw, this.D);
@@ -163,8 +164,9 @@ class CreateRouteGA extends GA {
             newPopulation = super.mutation(offspring, 1, offspring[0].length - 1);
         }
         const fitnessValues = this.callFitness(this.distanceMatrix,newPopulation, this.maxWeightInCar, this.shippingWeight, this.Hsan, this.Hw, this.D);
-        const [bestSolution] = super.selectParents(newPopulation, fitnessValues, 1);
-        return bestSolution
+        const [bestIndividual] = super.selectParents(newPopulation, fitnessValues, 1);
+        return this.bestRes[1]
+
     }
 }
 // const distanceMatrix = [

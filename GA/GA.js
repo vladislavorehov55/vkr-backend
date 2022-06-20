@@ -4,11 +4,20 @@ class GA {
     generateNumber(min, max) {
         return Math.floor(Math.random() * (max - min)) + min;
     }
+    bestRes = []
     selectParents(population, fitnessValues, parentsCount) {
         const fitnessValuesArr = fitnessValues.map((item, ind) => [ind, item])
         fitnessValuesArr.sort((a, b) => a[1] - b[1]);
         const parents = []
         fitnessValuesArr.slice(0, parentsCount).forEach(item => parents.push(population[item[0]]));
+        if (this.bestRes.length === 0) {
+            this.bestRes[0] = fitnessValuesArr[0][1];
+            this.bestRes[1] = parents[0]
+        }
+        else if (this.bestRes.length !== 0 && fitnessValuesArr[0][1] < this.bestRes[0]) {
+            this.bestRes[0] = fitnessValuesArr[0][1];
+            this.bestRes[1] = parents[0]
+        }
         return parents
     }
     mutation(offspring, min, max) {

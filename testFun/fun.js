@@ -2,8 +2,8 @@ function generateNumber(min, max) {
   return Math.floor(Math.random() * (max - min)) + min;
 }
 
-const CreateGroupsPoints = require('./CreateGroupsPointsGA');
-const CreateRouteGA = require("./CreateRouteGA");
+const CreateGroupsPoints = require('../GA/CreateGroupsPointsGA');
+const CreateRouteGA = require("../GA/CreateRouteGA");
 const routesDistanceMatrixSecond =
   [
     [28, 79, 13, 6, 81, 78],
