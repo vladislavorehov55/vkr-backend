@@ -154,11 +154,11 @@ class CreateRouteGA extends GA {
     }
 
     execute() {
-        const generationCount = 10;
+        const generationCount = 200;
         let newPopulation = this.generatePopulation(60);
         for (let i = 0; i < generationCount; i++) {
             const fitnessValues = this.callFitness(this.distanceMatrix,newPopulation, this.maxWeightInCar, this.shippingWeight, this.Hsan, this.Hw, this.D);
-            const selectedParents = super.selectParents(newPopulation, fitnessValues, 10);
+            const selectedParents = super.selectParents(newPopulation, fitnessValues, 20);
             const offspring = this.crossover(selectedParents);
             newPopulation = super.mutation(offspring, 1, offspring[0].length - 1);
         }

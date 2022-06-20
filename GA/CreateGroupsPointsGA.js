@@ -118,11 +118,11 @@ class CreateGroupsPointsGA extends GA{
     }
 
     execute() {
-        const generationCount = 10;
+        const generationCount = 200;
         let newPopulation = this.generatePopulation(60, this.distanceMatrix);
         for (let i = 0; i < generationCount; i++) {
             const fitnessValues = this.callFitness(newPopulation, this.countDrivers, this.distanceMatrix);
-            const selectedParents = this.selectParents(newPopulation, fitnessValues, 10);
+            const selectedParents = this.selectParents(newPopulation, fitnessValues, 20);
             const offspring = this.crossover(selectedParents);
             newPopulation = super.mutation(offspring, 0, offspring[0].length)
         }
